@@ -75,7 +75,6 @@ class _IfcViewerWidgetState extends State<IfcViewerWidget> {
           initialUserScripts: UnmodifiableListView<UserScript>([]),
           initialSettings: settings,
           contextMenu: contextMenu,
-          // pullToRefreshController: pullToRefreshController,
           onWebViewCreated: (controller) async {
             webViewController = controller;
           },

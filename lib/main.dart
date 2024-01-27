@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lite_rolling_switch/lite_rolling_switch.dart';
+import 'package:viewer_with_control/widgets/office_space_widget.dart';
 
 import 'widgets/ifc_viewer_widget.dart';
 
@@ -106,117 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class OpenSpaceControlWidget extends StatelessWidget {
-  const OpenSpaceControlWidget({
-    super.key,
-    required this.name,
-    required this.onCurtainsUp,
-    required this.onCurtainsDown,
-    required this.onLightingSwitch,
-  });
 
-  final String name;
-  final VoidCallback onCurtainsUp;
-  final VoidCallback onCurtainsDown;
-  final Function(bool) onLightingSwitch;
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            name,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontFamily: 'NunitoSans-Bold',
-              color: Colors.deepPurple,
-              fontSize: 18,
-            ),
-          ),
-        ),
-        Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: SvgPicture.asset('assets/svg/curtains.svg'),
-            ),
-            ButtonBar(
-              alignment: MainAxisAlignment.center,
-              children: <Widget>[
-                CurtainsButton(
-                  icon: const Icon(Icons.arrow_upward),
-                  onPressed: onCurtainsUp,
-                ),
-                CurtainsButton(
-                  icon: const Icon(Icons.arrow_downward),
-                  onPressed: onCurtainsDown,
-                ),
-              ],
-            ),
-            SvgPicture.asset(
-              'assets/svg/lighting.svg',
-              fit: BoxFit.fitWidth,
-            ),
-            LightingButton(
-              onChanged: onLightingSwitch,
-            ),
-          ],
-        )
-      ],
-    );
-  }
-}
 
-class CurtainsButton extends StatelessWidget {
-  const CurtainsButton(
-      {super.key, required this.onPressed, required this.icon});
 
-  final Function() onPressed;
-  final Icon icon;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SizedBox(
-        width: 130,
-        child: ElevatedButton(
-          onPressed: onPressed,
-          child: icon,
-        ),
-      ),
-    );
-  }
-}
-
-class LightingButton extends StatelessWidget {
-  const LightingButton({super.key, required this.onChanged});
-
-  final Function(bool) onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 20),
-      child: SizedBox(
-        height: 48,
-        child: LiteRollingSwitch(
-          value: false,
-          textOn: '',
-          textOff: '',
-          colorOn: Colors.deepPurple,
-          colorOff: Colors.grey,
-          iconOn: Icons.light_rounded,
-          iconOff: Icons.light_outlined,
-          animationDuration: const Duration(milliseconds: 300),
-          onChanged: onChanged,
-          onDoubleTap: () {},
-          onSwipe: () {},
-          onTap: () {},
-        ),
-      ),
-    );
-  }
-}
