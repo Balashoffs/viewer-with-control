@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Flutter Trusted Web Activity</string>
+    <string name="asset_statements">
+        [{
+            \"relation\": [\"delegate_permission/common.handle_all_urls\"],
+            \"target\": {
+                \"namespace\": \"web\",
+                \"site\": \"http://192.168.88.164:5173/"}
+        },
+        {
+            \"relation\": [\"delegate_permission/common.handle_all_urls\"],
+            \"target\": {
+                \"namespace\": \"web\",
+                \"site\": \"http://192.168.88.164:5173/"}
+        }]
+    </string>
+</resources>
