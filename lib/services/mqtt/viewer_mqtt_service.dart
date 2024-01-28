@@ -1,18 +1,18 @@
 import 'dart:async';
 
 import 'package:mqtt_client/mqtt_client.dart';
-import 'package:viewer_with_control/models/mqtt/viewer_mqqt_message.dart';
+import 'package:viewer_with_control/models/viewer_mqqt_message.dart';
 import 'package:viewer_with_control/services/mqtt/viewer_mqtt_client.dart';
 
 class ViewerMqttService {
   final ViewerMqttClient _viewerMqttClient;
 
-  StreamController<MQTTMessage> _streamController = StreamController();
-  late StreamSubscription<MQTTMessage> _streamSubscription;
+  late StreamController<ActionMessage> _streamController;
+  late StreamSubscription<ActionMessage> _streamSubscription;
 
-  Stream<MQTTMessage> get stream => _streamController.stream;
+  Stream<ActionMessage> get stream => _streamController.stream;
 
-  StreamSink<MQTTMessage> get sink => _streamController.sink;
+  StreamSink<ActionMessage> get sink => _streamController.sink;
 
   ViewerMqttService(String host, int port)
       : _viewerMqttClient = ViewerMqttClient(host, port);
@@ -24,8 +24,10 @@ class ViewerMqttService {
         case MqttConnectionState.disconnected:
         case MqttConnectionState.faulted:
           _streamSubscription.cancel();
+          _streamController.close();
           break;
         case MqttConnectionState.connecting:
+          _streamController = StreamController();
           break;
         case MqttConnectionState.connected:
           _streamSubscription = stream.listen(_onPublishMessage);
@@ -34,12 +36,11 @@ class ViewerMqttService {
     };
   }
 
-  void _onPublishMessage(MQTTMessage message) {
+  void _onPublishMessage(ActionMessage message) {
     _viewerMqttClient.publish(message);
   }
 
   Future<void> close() async {
-    _streamController.close();
     _viewerMqttClient.close();
   }
 }

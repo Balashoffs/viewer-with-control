@@ -1,13 +1,16 @@
 import 'dart:collection';
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:viewer_with_control/bloc/viewer_page_cubit.dart';
+import 'package:viewer_with_control/models/viewer_mqqt_message.dart';
 
 class IfcViewerWidget extends StatefulWidget {
   @override
-  _IfcViewerWidgetState createState() =>
-      _IfcViewerWidgetState();
+  _IfcViewerWidgetState createState() => _IfcViewerWidgetState();
 }
 
 class _IfcViewerWidgetState extends State<IfcViewerWidget> {
@@ -58,11 +61,23 @@ class _IfcViewerWidgetState extends State<IfcViewerWidget> {
               " " +
               contextMenuItemClicked.title);
         });
+
+    context.read<ViewerPageCubit>().outPutStream.listen(_handleActionMessages);
+  }
+
+  void _handleActionMessages(ActionMessage message) async {
+    var webMessageChannel = await webViewController?.createWebMessageChannel();
+    var port1 = webMessageChannel!.port1;
+    String json = jsonEncode(message);
+    webViewController!.postWebMessage(
+      message: WebMessage(data: json, ports: [port1]),
+    );
   }
 
   @override
   void dispose() {
     super.dispose();
+    context.read<ViewerPageCubit>().closeIfcViewer();
   }
 
   @override
@@ -77,6 +92,12 @@ class _IfcViewerWidgetState extends State<IfcViewerWidget> {
           contextMenu: contextMenu,
           onWebViewCreated: (controller) async {
             webViewController = controller;
+            webViewController?.addJavaScriptHandler(
+              handlerName: 'message_vm',
+              callback: (arguments) {
+                context.read<ViewerPageCubit>().ifcViewerLoaded();
+              },
+            );
           },
           onLoadStart: (controller, url) async {
             setState(() {

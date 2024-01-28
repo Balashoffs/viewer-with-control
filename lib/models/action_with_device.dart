@@ -1,4 +1,6 @@
 enum ActionWithDeviceEnum{
+  open_viewer('ready viewer'),
+
   light_switch_one('/devices/knx_main5_middle0/controls/control5_0_13/on'),
   light_switch_one_fb('/devices/knx_main5_middle1/controls/control5_1_13'),
   light_switch_one_dim('/devices/knx_main5_middle2/controls/control5_2_13/on'),
@@ -20,6 +22,8 @@ enum ActionWithDeviceEnum{
   light_test_3_fb('/devices/test_lamp_3/controls/power_fb'),
   light_test_4('/devices/test_lamp_4/controls/power/on'),
   light_test_4_fb('/devices/test_lamp_4/controls/power_fb');
+
+
 
   final String topic;
 

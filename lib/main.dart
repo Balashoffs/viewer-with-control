@@ -1,10 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lite_rolling_switch/lite_rolling_switch.dart';
+import 'package:viewer_with_control/repository/viewer_device_control_repository.dart';
+import 'package:viewer_with_control/widgets/enable_remote_control_widget.dart';
 import 'package:viewer_with_control/widgets/office_space_widget.dart';
 
+import 'bloc/viewer_page_cubit.dart';
 import 'widgets/ifc_viewer_widget.dart';
 
 final localhostServer = InAppLocalhostServer(documentRoot: 'assets/viewer');
@@ -50,64 +54,155 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  late ViewerDeviceControlRepository _deviceControlRepository;
+
+  @override
+  void initState() {
+    super.initState();
+    _deviceControlRepository = ViewerDeviceControlRepository();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Center(
-            // Center is a layout widget. It takes a single child and positions it
-            // in the middle of the parent.
-            child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Flexible(
-                      flex: 2,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+    return RepositoryProvider.value(
+      value: _deviceControlRepository,
+      child: BlocProvider(
+        create: (context) => ViewerPageCubit(_deviceControlRepository)..init(),
+        child: SafeArea(
+          child: Scaffold(
+            body: MainPage(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    context.read<ViewerDeviceControlRepository>().stop();
+    super.dispose();
+  }
+}
+
+class MainPage extends StatelessWidget {
+  const MainPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            BlocBuilder<ViewerPageCubit, ViewerPageState>(
+              builder: (context, state) {
+                if (state.status == ViewerPageStatus.loading) {
+                  return Flexible(
+                    flex: 2,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Center(
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            OpenSpaceControlWidget(
-                              name: 'Пространство',
-                              onCurtainsDown: () {},
-                              onCurtainsUp: () {},
-                              onLightingSwitch: (state) {},
-                            ),
                             SizedBox(
-                              height: 36,
+                              width: 128,
+                              child: Text(
+                                'Иницилизация управления стендом',
+                                maxLines: 3,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'NunitoSans-Bold',
+                                  color: Colors.deepPurple,
+                                  fontSize: 14,
+                                ),
+                              ),
                             ),
-                            OpenSpaceControlWidget(
-                              name: 'Кабинет',
-                              onCurtainsDown: () {},
-                              onCurtainsUp: () {},
-                              onLightingSwitch: (state) {},
+                            SizedBox(height: 48,),
+                            CircularProgressIndicator(
+                              backgroundColor: Colors.deepPurple,
+                              color: Colors.deepPurple.shade50,
                             ),
                           ],
                         ),
                       ),
-                      // fit: FlexFit.loose,
                     ),
-                    Flexible(
-                      child: IfcViewerWidget(),
-                      flex: 12,
+                  );
+                }
+                return Flexible(
+                  flex: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        EnableRemoteControlWidget(
+                          icRemote: (isChecked) {
+                            context
+                                .read<ViewerDeviceControlRepository>()
+                                .switchRemoteControl(isChecked);
+                          },
+                        ),
+                        const Divider(
+                          height: 20,
+                          thickness: 2,
+                          indent: 0,
+                          endIndent: 0,
+                          color: Colors.deepPurple,
+                        ),
+                        OpenSpaceControlWidget(
+                          name: 'Пространство',
+                          onCurtainsDown: () {
+                            context
+                                .read<ViewerDeviceControlRepository>()
+                                .downCurtainsOne();
+                          },
+                          onCurtainsUp: () {
+                            context
+                                .read<ViewerDeviceControlRepository>()
+                                .upCurtainsOne();
+                          },
+                          onLightingSwitch: (state) {
+                            context
+                                .read<ViewerDeviceControlRepository>()
+                                .switchLightOne(state);
+                          },
+                        ),
+                        SizedBox(
+                          height: 36,
+                        ),
+                        OpenSpaceControlWidget(
+                          name: 'Кабинет',
+                          onCurtainsDown: () {
+                            context
+                                .read<ViewerDeviceControlRepository>()
+                                .downCurtainsTwo();
+                          },
+                          onCurtainsUp: () {
+                            context
+                                .read<ViewerDeviceControlRepository>()
+                                .upCurtainsTwo();
+                          },
+                          onLightingSwitch: (state) {
+                            context
+                                .read<ViewerDeviceControlRepository>()
+                                .switchLightTwo(state);
+                          },
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
+                  ),
+                  // fit: FlexFit.loose,
+                );
+              },
             ),
-          ),
+            Flexible(
+              child: IfcViewerWidget(),
+              flex: 12,
+            ),
+          ],
         ),
       ),
-      // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
-
-
-
-
-
