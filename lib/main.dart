@@ -2,8 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 import 'package:viewer_with_control/repository/viewer_device_control_repository.dart';
 import 'package:viewer_with_control/widgets/enable_remote_control_widget.dart';
 import 'package:viewer_with_control/widgets/office_space_widget.dart';

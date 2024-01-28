@@ -87,13 +87,14 @@ class _IfcViewerWidgetState extends State<IfcViewerWidget> {
         InAppWebView(
           key: webViewKey,
           initialUrlRequest: URLRequest(url: WebUri('http://localhost:8080/')),
+          // initialUrlRequest: URLRequest(url: WebUri('http://192.168.88.164:5173/')),
           initialUserScripts: UnmodifiableListView<UserScript>([]),
           initialSettings: settings,
           contextMenu: contextMenu,
           onWebViewCreated: (controller) async {
             webViewController = controller;
             webViewController?.addJavaScriptHandler(
-              handlerName: 'message_vm',
+              handlerName: 'viewer',
               callback: (arguments) {
                 context.read<ViewerPageCubit>().ifcViewerLoaded();
               },

@@ -20,7 +20,7 @@ class _EnableRemoteControlWidgetState extends State<EnableRemoteControlWidget> {
         SizedBox(
           width: 96,
           child: Text(
-            'Удаленный контроль',
+            'Удаленное управление',
             maxLines: 2,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
