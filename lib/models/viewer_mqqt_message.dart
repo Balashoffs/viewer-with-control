@@ -11,7 +11,7 @@ class ActionMessage {
 
   Map<String, dynamic> toMap() {
     return {
-      'action': this.action,
+      'action': this.action.name,
       'value': this.value,
     };
   }

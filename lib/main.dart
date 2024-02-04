@@ -135,7 +135,7 @@ class MainPage extends StatelessWidget {
                     child: Column(
                       children: [
                         EnableRemoteControlWidget(
-                          icRemote: (isChecked) {
+                          icRemote: (isChecked) async{
                             context
                                 .read<ViewerDeviceControlRepository>()
                                 .switchRemoteControl(isChecked);
@@ -150,17 +150,17 @@ class MainPage extends StatelessWidget {
                         ),
                         OpenSpaceControlWidget(
                           name: 'Пространство',
-                          onCurtainsDown: () {
+                          onCurtainsDown: () async{
                             context
                                 .read<ViewerDeviceControlRepository>()
                                 .downCurtainsOne();
                           },
-                          onCurtainsUp: () {
+                          onCurtainsUp: () async{
                             context
                                 .read<ViewerDeviceControlRepository>()
                                 .upCurtainsOne();
                           },
-                          onLightingSwitch: (state) {
+                          onLightingSwitch: (state)async {
                             context
                                 .read<ViewerDeviceControlRepository>()
                                 .switchLightOne(state);
@@ -171,17 +171,17 @@ class MainPage extends StatelessWidget {
                         ),
                         OpenSpaceControlWidget(
                           name: 'Кабинет',
-                          onCurtainsDown: () {
+                          onCurtainsDown: () async{
                             context
                                 .read<ViewerDeviceControlRepository>()
                                 .downCurtainsTwo();
                           },
-                          onCurtainsUp: () {
+                          onCurtainsUp: () async{
                             context
                                 .read<ViewerDeviceControlRepository>()
                                 .upCurtainsTwo();
                           },
-                          onLightingSwitch: (state) {
+                          onLightingSwitch: (state) async{
                             context
                                 .read<ViewerDeviceControlRepository>()
                                 .switchLightTwo(state);

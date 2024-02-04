@@ -5,9 +5,11 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application
         android:networkSecurityConfig="@xml/network_security_config"
-        android:label="iewer_with_control"
+        android:requestLegacyExternalStorage="false"
+        android:allowBackup="false"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/app_logo"
+        android:label="view control">
         <meta-data
             android:name="asset_statements"
             android:resource="@string/asset_statements" />

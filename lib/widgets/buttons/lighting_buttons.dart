@@ -14,8 +14,9 @@ class LightingButton extends StatelessWidget {
         height: 48,
         child: LiteRollingSwitch(
           value: false,
-          textOn: '',
-          textOff: '',
+          textOn: 'вкл',
+          textOff: 'выкл',
+          textOnColor: Colors.white,
           colorOn: Colors.deepPurple,
           colorOff: Colors.grey,
           iconOn: Icons.light_rounded,

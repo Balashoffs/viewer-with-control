@@ -54,15 +54,20 @@ class ViewerMqttClient{
     /// in some circumstances the broker will just disconnect us, see the spec about this, we however will
     /// never send malformed messages.
     try {
-      await _client.connect();
+      MqttClientConnectionStatus? status = await _client.connect();
+      if(status != null){
+        print(status.state);
+      }else{
+        print('Couldn\'t connect to mqtt server');
+      }
     } on NoConnectionException catch (e) {
       _callback.call(MqttConnectionState.faulted);
-      print('EXAMPLE::client exception - $e');
+      print('client exception - $e');
       _client.disconnect();
       return;
     } on SocketException catch (e) {
       _callback.call(MqttConnectionState.faulted);
-      print('EXAMPLE::socket exception - $e');
+      print('socket exception - $e');
       _client.disconnect();
       return;
     }
@@ -70,12 +75,12 @@ class ViewerMqttClient{
     /// Check we are connected
     if (_client.connectionStatus!.state == MqttConnectionState.connected) {
       _callback.call(MqttConnectionState.connected);
-      print('EXAMPLE::Mosquitto client connected');
+      print('Mosquitto client connected');
     } else {
       _callback.call(MqttConnectionState.faulted);
       /// Use status here rather than state if you also want the broker return code.
       print(
-          'EXAMPLE::ERROR Mosquitto client connection failed - disconnecting, status is ${_client.connectionStatus}');
+          'ERROR Mosquitto client connection failed - disconnecting, status is ${_client.connectionStatus}');
       _client.disconnect();
       return;
     }
@@ -97,27 +102,27 @@ class ViewerMqttClient{
 
   /// The subscribed callback
   void onSubscribed(String topic) {
-    print('EXAMPLE::Subscription confirmed for topic $topic');
+    print('Subscription confirmed for topic $topic');
   }
 
   /// The unsolicited disconnect callback
   void onDisconnected() {
     _callback.call(MqttConnectionState.disconnected);
-    print('EXAMPLE::OnDisconnected client callback - Client disconnection');
+    print('OnDisconnected client callback - Client disconnection');
     if (_client.connectionStatus!.disconnectionOrigin ==
         MqttDisconnectionOrigin.solicited) {
-      print('EXAMPLE::OnDisconnected callback is solicited, this is correct');
+      print('OnDisconnected callback is solicited, this is correct');
     }
   }
 
   /// The successful connect callback
   void onConnected() {
     print(
-        'EXAMPLE::OnConnected client callback - Client connection was successful');
+        'OnConnected client callback - Client connection was successful');
   }
 
   /// Pong callback
   void pong() {
-    print('EXAMPLE::Ping response client callback invoked');
+    print('Ping response client callback invoked');
   }
 }

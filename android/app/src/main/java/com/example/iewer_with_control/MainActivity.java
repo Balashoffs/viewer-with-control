@@ -1,4 +1,4 @@
-package su.liis.iewer_with_control;
+package su.liis.viewer_with_control;
 
 import io.flutter.embedding.android.FlutterActivity;
 

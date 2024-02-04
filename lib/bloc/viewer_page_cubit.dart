@@ -16,15 +16,15 @@ class ViewerPageCubit extends Cubit<ViewerPageState> {
         super(ViewerPageState(status: ViewerPageStatus.loading));
 
   final StreamController<ActionMessage> _incomingStreamController;
-  final StreamController<ActionMessage> _outputStreamController;
+  final StreamController<Map<String, dynamic>> _outputStreamController;
 
   Stream<ActionMessage> get incomingStream => _incomingStreamController.stream;
 
-  Stream<ActionMessage> get outPutStream => _outputStreamController.stream;
+  Stream<Map<String, dynamic>> get outPutStream => _outputStreamController.stream;
 
   init() async {
     _incomingStreamController.stream.listen(_handleWSMessage);
-    _deviceControlRepository.setWSMessageSink(_incomingStreamController.sink);
+    _deviceControlRepository.setWSMessageSink(_outputStreamController.sink);
   }
 
   void _handleWSMessage(ActionMessage actionMessage) {
@@ -34,14 +34,14 @@ class ViewerPageCubit extends Cubit<ViewerPageState> {
   void ifcViewerLoaded() {
     ActionMessage actionMessage =
         ActionMessage(action: ActionWithDeviceEnum.open_viewer, value: '1');
-    _deviceControlRepository.handleViewerMessage(actionMessage);
+    _deviceControlRepository.handleViewerMessageForMqtt(actionMessage);
     emit(ViewerPageState(status: ViewerPageStatus.loaded));
   }
 
   void closeIfcViewer() {
     ActionMessage actionMessage =
         ActionMessage(action: ActionWithDeviceEnum.open_viewer, value: '0');
-    _deviceControlRepository.handleViewerMessage(actionMessage);
+    _deviceControlRepository.handleViewerMessageForMqtt(actionMessage);
     emit(ViewerPageState(status: ViewerPageStatus.closed));
   }
 

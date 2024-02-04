@@ -65,7 +65,7 @@ class _IfcViewerWidgetState extends State<IfcViewerWidget> {
     context.read<ViewerPageCubit>().outPutStream.listen(_handleActionMessages);
   }
 
-  void _handleActionMessages(ActionMessage message) async {
+  void _handleActionMessages(Map<String, dynamic> message) async {
     var webMessageChannel = await webViewController?.createWebMessageChannel();
     var port1 = webMessageChannel!.port1;
     String json = jsonEncode(message);

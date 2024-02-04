@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:viewer_with_control/models/viewer_mqqt_message.dart';
@@ -8,7 +9,6 @@ class ViewerMqttService {
   final ViewerMqttClient _viewerMqttClient;
 
   late StreamController<ActionMessage> _streamController;
-  late StreamSubscription<ActionMessage> _streamSubscription;
 
   Stream<ActionMessage> get stream => _streamController.stream;
 
@@ -23,20 +23,21 @@ class ViewerMqttService {
         case MqttConnectionState.disconnecting:
         case MqttConnectionState.disconnected:
         case MqttConnectionState.faulted:
-          _streamSubscription.cancel();
           _streamController.close();
           break;
         case MqttConnectionState.connecting:
           _streamController = StreamController();
           break;
         case MqttConnectionState.connected:
-          _streamSubscription = stream.listen(_onPublishMessage);
+          stream.listen(_onPublishMessage);
           break;
       }
     };
+    _viewerMqttClient.connect();
   }
 
   void _onPublishMessage(ActionMessage message) {
+    log('${message}');
     _viewerMqttClient.publish(message);
   }
 
