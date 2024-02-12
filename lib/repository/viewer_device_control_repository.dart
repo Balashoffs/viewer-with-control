@@ -99,17 +99,17 @@ class ViewerDeviceControlRepository {
     _mqttService = ViewerMqttService(host, port);
   }
 
-  void downCurtainsOne() async {
+  void downCurtainsSpace() async {
     if (isRemote) {
       ActionMessage message = ActionMessage(
-          action: ActionWithDeviceEnum.curtains_switch_one, value: "0");
+          action: ActionWithDeviceEnum.curtains_switch_space, value: "0");
       print('MQTT:downCurtainsOne::create message: $message');
       _mqttService?.sink.add(message);
     }
     CurtainsDevice curtainsDevice = CurtainsDevice(
-      deviceId: 'curtains1',
+      deviceId: 'curtains2',
       value: 0,
-      deviceName: 'curtains1',
+      deviceName: 'curtains2',
       deviceStatus: CurtainsStatus.opened,
       deviceAction: CurtainsAction.close,
     );
@@ -121,11 +121,77 @@ class ViewerDeviceControlRepository {
     _viewerStreamSink.add(curtainsDevice.toMapForViewer());
   }
 
-  void upCurtainsOne() async {
+  void upCurtainsSpace() async {
     if (isRemote) {
       ActionMessage message = ActionMessage(
-          action: ActionWithDeviceEnum.curtains_switch_one, value: "1");
+          action: ActionWithDeviceEnum.curtains_switch_space, value: "1");
       print('MQTT:upCurtainsOne::create message: $message');
+      _mqttService?.sink.add(message);
+    }
+    CurtainsDevice curtainsDevice = CurtainsDevice(
+      deviceId: 'curtains2',
+      value: 1,
+      deviceName: 'curtains2',
+      deviceStatus: CurtainsStatus.closed,
+      deviceAction: CurtainsAction.open,
+    );
+    OpcMessage opcMessage = OpcMessage(
+        messageType: MessageType.curtains_cs,
+        body: jsonEncode(curtainsDevice.toMap()));
+    print('WS:upCurtainsOne::create message: $opcMessage');
+    _webSocketService?.sink.add(opcMessage);
+    _viewerStreamSink.add(curtainsDevice.toMapForViewer());
+  }
+
+  void switchLightSpace(bool state) async {
+    String value = state ? '1' : '0';
+
+    if (isRemote) {
+      ActionMessage message = ActionMessage(
+          action: ActionWithDeviceEnum.light_switch_space, value: value);
+      print('MQTT:switchLightOne::create message: $message');
+      _mqttService?.sink.add(message);
+    }
+    LightingDevice lightingDevice = LightingDevice(
+      deviceId: 'led1',
+      deviceName: 'led1',
+      deviceStatus: state ? LightingStatus.on : LightingStatus.off,
+    );
+    OpcMessage opcMessage = OpcMessage(
+        messageType: MessageType.lighting_cs,
+        body: jsonEncode(lightingDevice.toMap()));
+    print('WS:switchLightOne::create message: $opcMessage');
+    _webSocketService?.sink.add(opcMessage);
+    _viewerStreamSink.add(lightingDevice.toMapForViewer());
+  }
+
+  void downCurtainsCabinet() async {
+    if (isRemote) {
+      ActionMessage message = ActionMessage(
+          action: ActionWithDeviceEnum.curtains_switch_cabinet, value: "0");
+      print('MQTT:downCurtainsTwo::create message: $message');
+      _mqttService?.sink.add(message);
+    }
+    CurtainsDevice curtainsDevice = CurtainsDevice(
+      deviceId: 'curtains1',
+      value: 0,
+      deviceName: 'curtains1',
+      deviceStatus: CurtainsStatus.opened,
+      deviceAction: CurtainsAction.close,
+    );
+    OpcMessage opcMessage = OpcMessage(
+        messageType: MessageType.curtains_cs,
+        body: jsonEncode(curtainsDevice.toMap()));
+    print('WS:downCurtainsTwo::create message: $opcMessage');
+    _webSocketService?.sink.add(opcMessage);
+    _viewerStreamSink.add(curtainsDevice.toMapForViewer());
+  }
+
+  void upCurtainsCabinet() async {
+    if (isRemote) {
+      ActionMessage message = ActionMessage(
+          action: ActionWithDeviceEnum.curtains_switch_cabinet, value: "1");
+      print('MQTT:upCurtainsTwo::create message: $message');
       _mqttService?.sink.add(message);
     }
     CurtainsDevice curtainsDevice = CurtainsDevice(
@@ -138,82 +204,16 @@ class ViewerDeviceControlRepository {
     OpcMessage opcMessage = OpcMessage(
         messageType: MessageType.curtains_cs,
         body: jsonEncode(curtainsDevice.toMap()));
-    print('WS:upCurtainsOne::create message: $opcMessage');
-    _webSocketService?.sink.add(opcMessage);
-    _viewerStreamSink.add(curtainsDevice.toMapForViewer());
-  }
-
-  void switchLightOne(bool state) async {
-    String value = state ? '1' : '0';
-
-    if (isRemote) {
-      ActionMessage message = ActionMessage(
-          action: ActionWithDeviceEnum.light_switch_one, value: value);
-      print('MQTT:switchLightOne::create message: $message');
-      _mqttService?.sink.add(message);
-    }
-    LightingDevice lightingDevice = LightingDevice(
-      deviceId: 'led1',
-      deviceName: 'led1',
-      deviceStatus: state ? LightingStatus.on : LightingStatus.off,
-    );
-    OpcMessage opcMessage = OpcMessage(
-        messageType: MessageType.curtains_cs,
-        body: jsonEncode(lightingDevice.toMap()));
-    print('WS:switchLightOne::create message: $opcMessage');
-    _webSocketService?.sink.add(opcMessage);
-    _viewerStreamSink.add(lightingDevice.toMapForViewer());
-  }
-
-  void downCurtainsTwo() async {
-    if (isRemote) {
-      ActionMessage message = ActionMessage(
-          action: ActionWithDeviceEnum.curtains_switch_one, value: "0");
-      print('MQTT:downCurtainsTwo::create message: $message');
-      _mqttService?.sink.add(message);
-    }
-    CurtainsDevice curtainsDevice = CurtainsDevice(
-      deviceId: 'curtains2',
-      value: 0,
-      deviceName: 'curtains2',
-      deviceStatus: CurtainsStatus.opened,
-      deviceAction: CurtainsAction.close,
-    );
-    OpcMessage opcMessage = OpcMessage(
-        messageType: MessageType.curtains_cs,
-        body: jsonEncode(curtainsDevice.toMap()));
-    print('WS:downCurtainsTwo::create message: $opcMessage');
-    _webSocketService?.sink.add(opcMessage);
-    _viewerStreamSink.add(curtainsDevice.toMapForViewer());
-  }
-
-  void upCurtainsTwo() async {
-    if (isRemote) {
-      ActionMessage message = ActionMessage(
-          action: ActionWithDeviceEnum.curtains_switch_one, value: "1");
-      print('MQTT:upCurtainsTwo::create message: $message');
-      _mqttService?.sink.add(message);
-    }
-    CurtainsDevice curtainsDevice = CurtainsDevice(
-      deviceId: 'curtains2',
-      value: 1,
-      deviceName: 'curtains2',
-      deviceStatus: CurtainsStatus.closed,
-      deviceAction: CurtainsAction.open,
-    );
-    OpcMessage opcMessage = OpcMessage(
-        messageType: MessageType.curtains_cs,
-        body: jsonEncode(curtainsDevice.toMap()));
     print('WS:upCurtainsTwo::create message: $opcMessage');
     _webSocketService?.sink.add(opcMessage);
     _viewerStreamSink.add(curtainsDevice.toMapForViewer());
   }
 
-  void switchLightTwo(bool state) async {
+  void switchLightCabinet(bool state) async {
     if (isRemote) {
       String value = state ? '1' : '0';
       ActionMessage message = ActionMessage(
-          action: ActionWithDeviceEnum.light_switch_one, value: value);
+          action: ActionWithDeviceEnum.light_switch_cabinet, value: value);
       print('MQTT:switchLightTwo::create message: $message');
       _mqttService?.sink.add(message);
     }
@@ -223,7 +223,7 @@ class ViewerDeviceControlRepository {
       deviceStatus: state ? LightingStatus.on : LightingStatus.off,
     );
     OpcMessage opcMessage = OpcMessage(
-        messageType: MessageType.curtains_cs,
+        messageType: MessageType.lighting_cs,
         body: jsonEncode(lightingDevice.toMap()));
     print('WS:switchLightOne::create message: $opcMessage');
     _webSocketService?.sink.add(opcMessage);

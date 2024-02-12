@@ -91,6 +91,7 @@ class ViewerMqttClient{
     _messageBuilder.clear();
     _messageBuilder.addString(message.value);
     String topic = message.action.topic;
+    print(topic);
     _client.publishMessage(topic, MqttQos.atLeastOnce, _messageBuilder.payload!);
     _messageBuilder.clear();
   }

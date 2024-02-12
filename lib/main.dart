@@ -153,17 +153,17 @@ class MainPage extends StatelessWidget {
                           onCurtainsDown: () async{
                             context
                                 .read<ViewerDeviceControlRepository>()
-                                .downCurtainsOne();
+                                .downCurtainsSpace();
                           },
                           onCurtainsUp: () async{
                             context
                                 .read<ViewerDeviceControlRepository>()
-                                .upCurtainsOne();
+                                .upCurtainsSpace();
                           },
                           onLightingSwitch: (state)async {
                             context
                                 .read<ViewerDeviceControlRepository>()
-                                .switchLightOne(state);
+                                .switchLightSpace(state);
                           },
                         ),
                         SizedBox(
@@ -174,17 +174,17 @@ class MainPage extends StatelessWidget {
                           onCurtainsDown: () async{
                             context
                                 .read<ViewerDeviceControlRepository>()
-                                .downCurtainsTwo();
+                                .downCurtainsCabinet();
                           },
                           onCurtainsUp: () async{
                             context
                                 .read<ViewerDeviceControlRepository>()
-                                .upCurtainsTwo();
+                                .upCurtainsCabinet();
                           },
                           onLightingSwitch: (state) async{
                             context
                                 .read<ViewerDeviceControlRepository>()
-                                .switchLightTwo(state);
+                                .switchLightCabinet(state);
                           },
                         ),
                       ],
